@@ -20,7 +20,9 @@ Haaaaard worker!
 ## stack
 
 - nodejs + typescript
-- openai api (whisper + translator)
+- openai api (whisper)
+  - https://platform.openai.com/docs/guides/speech-to-text
+- translator
   - _later: DeepL_
 
 ## process

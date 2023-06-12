@@ -1,1 +1,1 @@
-console.log('completed...');
+import 'dotenv/config';

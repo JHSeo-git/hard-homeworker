@@ -30,6 +30,10 @@
     "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx --ignore-path .gitignore",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "dotenv": "^16.1.4",
+    "openai": "^3.2.1"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.2",
     "@types/node": "^20.2.5",
