@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 
 import { Configuration, OpenAIApi } from 'openai';
 
@@ -15,10 +15,12 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export async function transcription(filePath: string) {
-  const rawFile = await fs.readFile(filePath, 'utf-8');
-  const file = new File([rawFile], 'audio.wav');
+  const audio = fs.createReadStream(filePath);
 
-  const response = await openai.createTranscription(file, 'whisper-1');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await openai.createTranscription(audio as any, 'whisper-1');
+
+  console.log(response);
 
   return response;
 }

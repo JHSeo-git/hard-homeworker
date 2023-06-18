@@ -3,27 +3,31 @@ import path from 'node:path';
 import readline from 'node:readline';
 
 import slugify from 'cjk-slug';
+import fsExtra from 'fs-extra';
 import ytdl from 'ytdl-core';
 
 export async function download(url: string) {
   const basicInfo = await ytdl.getBasicInfo(url);
   const title = basicInfo.videoDetails.title;
 
-  const video = ytdl(url);
+  const audio = ytdl(url, { filter: (format) => format.mimeType?.includes('audio/mp4') ?? false });
 
   const fileName = slugify(title);
-  const filePath = path.join(process.cwd(), 'data', 'videos', `${fileName}.mp4`);
+  const date = new Date().toISOString().split('T')[0];
+  const fileDir = path.join(process.cwd(), 'records', 'videos', date);
+  const filePath = path.join(fileDir, `${fileName}.mp4`);
+  fsExtra.ensureDirSync(fileDir);
 
   return new Promise<string>((resolve, reject) => {
     // get youtube info
     // download
     let starttime: number;
 
-    video.pipe(fs.createWriteStream(filePath));
-    video.once('response', () => {
+    audio.pipe(fs.createWriteStream(filePath));
+    audio.once('response', () => {
       starttime = Date.now();
     });
-    video.on('progress', (chunkLength, downloaded, total) => {
+    audio.on('progress', (chunkLength, downloaded, total) => {
       const percent = downloaded / total;
       const downloadedMinutes = (Date.now() - starttime) / 1000 / 60;
       const estimatedDownloadTime = downloadedMinutes / percent - downloadedMinutes;
@@ -36,11 +40,11 @@ export async function download(url: string) {
       process.stdout.write(`, Estimated time left: ${estimatedDownloadTime.toFixed(2)} minutes `);
       readline.moveCursor(process.stdout, 0, -1);
     });
-    video.on('end', () => {
+    audio.on('end', () => {
       process.stdout.write('\n\nfinished downloading!\n\n');
       resolve(filePath);
     });
-    video.on('error', (error) => {
+    audio.on('error', (error) => {
       reject(error);
     });
   });
