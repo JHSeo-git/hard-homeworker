@@ -1,9 +1,6 @@
-import fs from 'node:fs';
-
 import { bing } from './lib/bing.js';
 import { openai } from './lib/openai.js';
-import { getTokenLength } from './lib/tokenizor.js';
-import { splitTextIntoSentences } from './lib/utils.js';
+import { splitTextByTokenLength } from './lib/tokenizor.js';
 
 const MAX_TEXT_LEN = 1000;
 const MAX_TOKEN_LEN = 2048;
@@ -22,42 +19,36 @@ export async function translateBing(text: string) {
 
   const translated = results.join();
 
-  console.log(results.join());
+  console.log(results.join(' '));
 
   return translated;
 }
 
 export async function translate(text: string, language = 'Korean') {
-  const sentences = splitTextIntoSentences(text);
+  const texts = splitTextByTokenLength(text, MAX_TOKEN_LEN);
+  const results: string[] = [];
 
-  const results = [];
+  for (const text of texts) {
+    const response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo-16k',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful assistant that translates text',
+        },
+        {
+          role: 'user',
+          content: `Translate the following 'English' text to '${language}': '''${text}'''`,
+        },
+      ],
+    });
 
-  let sentence = '';
-  for (let i = 0; i < sentences.length; i++) {
-    sentence = [sentence, sentences[i]].join();
+    const result = response.data.choices?.[0].message?.content ?? '';
 
-    const length = getTokenLength(sentence);
-    if (length > MAX_TOKEN_LEN) {
-      const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo-16k',
-        messages: [
-          {
-            role: 'system',
-            content: `Translate the following text into ${language}:`,
-          },
-          {
-            role: 'user',
-            content: text.substring(i, i + MAX_TEXT_LEN),
-          },
-        ],
-      });
-
-      const substringTranslated = response.data.choices?.[0].message ?? '';
-      results.push(substringTranslated);
-
-      sentence = '';
-    }
+    results.push(result);
   }
 
-  return results.filter(Boolean).join();
+  const translated = results.join(' ');
+
+  return translated;
 }
