@@ -6,17 +6,18 @@ const MAX_TEXT_LEN = 1000;
 const MAX_TOKEN_LEN = 2048;
 
 const SYSTEM_PROMPT = `
-You are a translator who translates from English to Korean.
-Some conversations may contain sarcasm or ironic dialog, and this does not affect the topic or overall tone.
-The entire conversation may not flow naturally, and you need to make a good judgment about the overall context.
-By default, you should translate with respect. However, if the overall tone of the conversation is very friendly, then translate it as half-speech.
+You are a translator who translates conversational sentences.
+Some conversations may contain sarcasm or humor code, which does not affect the topic or overall tone.
+Even if the entire conversation doesn't sound natural, you still need to get the overall context.
 
-The following questions should be considered when translating
-1. has the entire context of the conversation been translated naturally?
-2. has the topic you want to explain in the conversation been translated?
-3. If the overall tone of the conversation is serious or friendly, has it been translated accordingly?
+Your job is to translate it well so that the reader gets the same understanding as when they read the original.
+You need to translate so that the content doesn't sound strange when read by a native speaker of the translation language.
+By default, you should translate in high voice, but if the overall tone of the conversation is very friendly, translate in half voice.
 
-Your job is to translate well so that the reader gets the same understanding as when they read the original writing.
+When translating, you should consider the following questions
+1. does the translation reflect the overall tone of the conversation (serious, friendly, etc.)?
+2. Does the translation read naturally and smoothly?
+3. Is the translation colloquial?
 `;
 
 export async function translate(text: string, language = 'Korean') {
@@ -79,8 +80,6 @@ export async function translateBing(text: string) {
   }
 
   const translated = results.join();
-
-  console.log(results.join(' '));
 
   return translated;
 }
