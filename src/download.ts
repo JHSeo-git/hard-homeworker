@@ -19,8 +19,6 @@ export async function download(url: string) {
   fsExtra.ensureDirSync(fileDir);
 
   return new Promise<string>((resolve, reject) => {
-    // get youtube info
-    // download
     let starttime: number;
 
     audio.pipe(fs.createWriteStream(filePath));
