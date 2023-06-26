@@ -14,22 +14,29 @@ Haaaaard worker!
 ## output
 
 - 전체 스피치를 텍스트로 번역한 스크립트
-- 맥락이 자연스러운 스크립트
 - 한글로 번역된 스크립트
+- 스피치 요약
 
 ## stack
 
-- nodejs + typescript
-- openai api (whisper)
-  - https://platform.openai.com/docs/guides/speech-to-text
+nodejs + typescript
+
+- downloader
+  - [ytdl-core](https://github.com/fent/node-ytdl-core)
+- tokenizer
+  - [@dqbd/tiktoken](https://github.com/dqbd/tiktoken)
+- transcription
+  - [openai api whisper](https://platform.openai.com/docs/guides/speech-to-text)
 - translator
-  - _later: DeepL_
+  - [openai api chatcompletion](https://platform.openai.com/docs/guides/gpt/chat-completions-api))
+  - _later: DeepL API_
 
 ## process
 
-1. 유투브 영상을 다운로드  
-   nodejs
+github action + cron (메뉴얼 동작도 같이 작성)
+
+0. 대상 유투브 주소를 입력(방식은 미정)
+1. 유투브 영상을 다운로드
 2. 영상(음성)을 텍스트로 변환
-3. 영문(주로 영문)을 한글로 번역
-4. 한글로 번역된 텍스트를 파일로 저장
-   github actions를 통해 저장소를 이용함
+3. 텍스트(주로 영문)를 한글로 번역
+4. 한글로 번역된 텍스트를 포맷팅하여 저장
