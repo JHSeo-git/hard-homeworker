@@ -23,6 +23,7 @@ nodejs + typescript
 
 - downloader
   - [ytdl-core](https://github.com/fent/node-ytdl-core)
+  - https://github.com/fent/node-ytdl-core/blob/master/example/ffmpeg.js
 - tokenizer
   - [@dqbd/tiktoken](https://github.com/dqbd/tiktoken)
 - transcription
