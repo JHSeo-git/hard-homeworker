@@ -3,7 +3,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 
 import slugify from 'cjk-slug';
-import fsExtra from 'fs-extra';
+import fsExtra from 'fs-extra/esm';
 import ytdl from 'ytdl-core';
 
 export async function download(url: string) {

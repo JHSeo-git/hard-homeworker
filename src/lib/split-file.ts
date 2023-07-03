@@ -1,22 +1,49 @@
 import { execSync } from 'node:child_process';
-import fs from 'node:fs';
+import path from 'node:path';
 
-export function splitFile(inputFile: string, outputDir: string, segmentSize: number) {
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir);
+import fsExtra from 'fs-extra/esm';
+
+export function splitVideoBySize(
+  inputFilePath: string,
+  outputDirectory: string,
+  sizeLimit: number
+) {
+  const duration = getVideoDuration(inputFilePath);
+  const basename = path.parse(inputFilePath).name;
+  const extension = path.basename(inputFilePath).split('.').pop();
+
+  fsExtra.ensureDirSync(outputDirectory);
+  const sizeLimitBytes = sizeLimit * 1024 * 1024;
+
+  let currDuration = 0;
+  let i = 1;
+
+  console.log(`Duration of source video: ${duration}`);
+
+  while (currDuration < duration) {
+    const nextFilename = `${basename}-${i}.${extension}`;
+    const outputFilePath = path.join(outputDirectory, nextFilename);
+
+    const ffmpegCommand = `ffmpeg -hide_banner -y -ss ${currDuration} -i "${inputFilePath}" -fs "${sizeLimitBytes}" -c copy "${outputFilePath}"`;
+
+    console.log(ffmpegCommand);
+    try {
+      execSync(ffmpegCommand);
+    } catch (error) {
+      console.error(`Errored to split part ${i}:`, error);
+    }
+
+    const newDuration = getVideoDuration(outputFilePath);
+    currDuration += newDuration;
+    i++;
+
+    console.log(`Duration of ${nextFilename}: ${newDuration}`);
+    console.log(`Part No. ${i} starts at ${currDuration}`);
   }
+}
 
-  const fileSize = fs.statSync(inputFile).size;
-  const segmentSizeBytes = segmentSize * 1024 * 1024; // MB를 바이트로 변환
-
-  const segments = Math.ceil(fileSize / segmentSizeBytes);
-
-  for (let i = 0; i < segments; i++) {
-    const startByte = i * segmentSizeBytes;
-    const outputFileName = `output_${i + 1}.mp4`;
-    const outputFile = `${outputDir}/${outputFileName}`;
-
-    const cmd = `ffmpeg -i ${inputFile} -c copy -ss ${startByte} -fs ${segmentSizeBytes} ${outputFile}`;
-    execSync(cmd);
-  }
+function getVideoDuration(file: string) {
+  const ffprobeCommand = `ffprobe -i "${file}" -show_entries format=duration -v quiet -of default=noprint_wrappers=1:nokey=1|cut -d. -f1`;
+  const output = execSync(ffprobeCommand).toString().trim();
+  return parseInt(output, 10);
 }
