@@ -24,6 +24,8 @@ nodejs + typescript
 - downloader
   - [ytdl-core](https://github.com/fent/node-ytdl-core)
   - https://github.com/fent/node-ytdl-core/blob/master/example/ffmpeg.js
+- ffmpeg: split vidoes
+  - [ffmpeg](https://ffmpeg.org/)
 - tokenizer
   - [@dqbd/tiktoken](https://github.com/dqbd/tiktoken)
 - transcription
@@ -38,6 +40,7 @@ github action + cron (메뉴얼 동작도 같이 작성)
 
 0. 대상 유투브 주소를 입력(방식은 미정)
 1. 유투브 영상을 다운로드
-2. 영상(음성)을 텍스트로 변환
-3. 텍스트(주로 영문)를 한글로 번역
-4. 한글로 번역된 텍스트를 포맷팅하여 저장
+2. API 명세(maxBodyLength)에 맞게 영상 분리
+3. 영상(음성)을 텍스트로 변환
+4. 텍스트(주로 영문)를 한글로 번역
+5. 한글로 번역된 텍스트를 포맷팅하여 저장
