@@ -1,10 +1,9 @@
 import fs from 'node:fs';
-import path from 'node:path';
 import readline from 'node:readline';
 
-import slugify from 'cjk-slug';
-import fsExtra from 'fs-extra/esm';
 import ytdl from 'ytdl-core';
+
+import { createSavePath } from './lib/file-utils.js';
 
 export async function download(url: string) {
   const basicInfo = await ytdl.getBasicInfo(url);
@@ -12,14 +11,15 @@ export async function download(url: string) {
 
   const audio = ytdl(url, { filter: (format) => format.mimeType?.includes('audio/mp4') ?? false });
 
-  const fileName = slugify(title);
-  const date = new Date().toISOString().split('T')[0];
-  const fileDir = path.join(process.cwd(), 'records', 'videos', date);
-  const filePath = path.join(fileDir, `${fileName}.mp4`);
-  fsExtra.ensureDirSync(fileDir);
+  const filePath = createSavePath('data/download', title, 'mp4');
 
   return new Promise<string>((resolve, reject) => {
     let starttime: number;
+
+    if (fs.existsSync(filePath)) {
+      resolve(filePath);
+      return;
+    }
 
     audio.pipe(fs.createWriteStream(filePath));
     audio.once('response', () => {
