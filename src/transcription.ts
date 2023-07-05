@@ -12,7 +12,7 @@ export async function transcription(filePath: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const response = await openai.createTranscription(audio as any, 'whisper-1');
 
-  const result = response.data.text ?? '';
+  const result = response.data.text;
 
   return result;
 }
