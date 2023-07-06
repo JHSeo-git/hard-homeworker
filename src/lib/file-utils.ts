@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import slugify from 'cjk-slug';
@@ -16,4 +17,17 @@ export function createSavePath(rootDir: string, fileName: string, extension: str
   const filePath = path.join(fileDir, `${slugFileName}.${extension}`);
 
   return filePath;
+}
+
+export function getFileNameFromPath(filePath: string) {
+  return path.parse(filePath).name;
+}
+
+export function getExtensionFromPath(filePath: string) {
+  return path.parse(filePath).ext.replace('.', '');
+}
+
+export async function writeFile(filePath: string, content: string) {
+  await fsExtra.ensureFile(filePath);
+  await fs.appendFile(filePath, content);
 }

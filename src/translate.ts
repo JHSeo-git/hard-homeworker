@@ -19,14 +19,17 @@ When translating, you should consider the following questions
 `;
 
 export async function translate(text: string, language = 'Korean') {
+  process.stdout.write('splitting text by token length...\n');
   const texts = splitTextByTokenLength(text, MAX_TOKEN_LEN);
+  process.stdout.write('splitting text by token length Done!\n');
+
   const results: string[] = [];
 
   for (let i = 0; i < texts.length; i++) {
     const targetText = texts[i];
 
     process.stdout.write(`translating...`);
-    process.stdout.write(`(${i + 1} of ${texts.length}) \n`);
+    process.stdout.write(`(${i + 1} of ${texts.length}) `);
 
     const starttime = Date.now();
 
@@ -61,6 +64,8 @@ text: ${targetText}`,
   }
 
   const translated = results.join(' ');
+
+  process.stdout.write(`translating Done!\n\n`);
 
   return translated;
 }
