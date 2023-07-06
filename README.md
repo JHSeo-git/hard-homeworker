@@ -1,5 +1,7 @@
 Haaaaard worker!
 
+see [index.ts](./src/index.ts)
+
 ## motivation
 
 개인적으로
@@ -45,4 +47,4 @@ github action + cron (메뉴얼 동작도 같이 작성)
 2. API 명세(maxBodyLength)에 맞게 영상 분리
 3. 영상(음성)을 텍스트로 변환
 4. 텍스트(주로 영문)를 한글로 번역
-5. 한글로 번역된 텍스트를 포맷팅하여 저장
+5. 한글로 번역된 텍스트 저장
