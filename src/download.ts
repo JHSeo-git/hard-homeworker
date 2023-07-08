@@ -36,7 +36,7 @@ export async function download(url: string) {
       );
       process.stdout.write(`running for: ${downloadedMinutes.toFixed(2)}minutes`);
       process.stdout.write(`, Estimated time left: ${estimatedDownloadTime.toFixed(2)} minutes `);
-      readline.cursorTo(process.stdout, 0, -1);
+      readline.moveCursor(process.stdout, 0, -1);
     });
     audio.on('end', () => {
       process.stdout.write('\n\nfinished downloading!\n\n');

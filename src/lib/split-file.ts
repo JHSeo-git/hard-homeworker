@@ -17,7 +17,7 @@ export function splitVideoBySize(
   let currDuration = 0;
   let i = 1;
 
-  process.stdout.write('splitting...\n');
+  process.stdout.write('splitting...\n\n');
 
   process.stdout.write(`Duration of source video: ${duration}\n`);
 
@@ -43,7 +43,7 @@ export function splitVideoBySize(
     process.stdout.write(`Part No. ${i} starts at ${currDuration}\n`);
   }
 
-  process.stdout.write('splitting Done!\n');
+  process.stdout.write('splitting Done!\n\n');
 
   return outputs;
 }

@@ -17,7 +17,7 @@ const AUDIO_SEGMENT_SIZE_MB = 20;
 
 async function start() {
   try {
-    const downloadedPath = await download('https://www.youtube.com/watch?v=7GcrT0SBSnI');
+    const downloadedPath = await download('https://www.youtube.com/watch?v=AdNJ3fydeao');
 
     const saveDir = createSaveDir('data/output');
     const outputs = splitVideoBySize(
