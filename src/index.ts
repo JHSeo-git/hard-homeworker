@@ -19,7 +19,7 @@ async function start() {
   process.stdout.write('>> Starting...\n\n');
 
   try {
-    const downloadedPath = await download('https://www.youtube.com/watch?v=AdNJ3fydeao');
+    const downloadedPath = await download('https://www.youtube.com/watch?v=GW0rj4sNH2w');
 
     const saveDir = createSaveDir('data/output');
     const outputs = splitVideoBySize(

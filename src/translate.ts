@@ -16,6 +16,8 @@ Even if the entire conversation doesn't sound natural, you still need to underst
 When translating, you should consider the following questions
 1. Does the translation reflect the overall tone of the conversation (serious, friendly, etc.)?
 2. Does the translation sound natural and smooth, like a human talking to a human?
+
+Do not include the text label or prompt in your translation.
 `;
 
 export async function translate(text: string, language = 'Korean') {
@@ -46,8 +48,6 @@ export async function translate(text: string, language = 'Korean') {
 Translate the following text to ${language}
 
 Text: ${targetText}
-
-Do not include the label or prompt in your translation.
 `,
         },
       ],
