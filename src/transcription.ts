@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import readline from 'node:readline';
 
 import { openai } from './lib/openai.js';
 
@@ -18,15 +17,8 @@ export async function transcription(filePath: string) {
     'whisper-1',
     undefined,
     undefined,
-    undefined,
-    undefined,
-    {
-      onDownloadProgress: (progressEvent) => {
-        readline.cursorTo(process.stdout, 0);
-        const percentCompleted = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
-        process.stdout.write(`transcripting... ${percentCompleted}\n`);
-      },
-    }
+    1,
+    'en'
   );
 
   process.stdout.write('transcripting Done!\n\n');

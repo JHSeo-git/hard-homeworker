@@ -29,5 +29,5 @@ export function getExtensionFromPath(filePath: string) {
 
 export async function writeFile(filePath: string, content: string) {
   await fsExtra.ensureFile(filePath);
-  await fs.appendFile(filePath, content);
+  await fs.writeFile(filePath, content);
 }

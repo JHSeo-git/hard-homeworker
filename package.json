@@ -28,6 +28,8 @@
     "dev": "NODE_ENV=development tsx watch --clear-screen=false ./src/index.ts",
     "format": "prettier --write .",
     "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx --ignore-path .gitignore",
+    "preview": "NODE_ENV=production tsx ./src/index.ts",
+    "start": "NODE_ENV=production node ./dist/index.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

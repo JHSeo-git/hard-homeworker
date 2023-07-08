@@ -16,6 +16,8 @@ const AUDIO_SEGMENT_SIZE_MB = 20;
  */
 
 async function start() {
+  process.stdout.write('>> Starting...\n\n');
+
   try {
     const downloadedPath = await download('https://www.youtube.com/watch?v=AdNJ3fydeao');
 
@@ -43,10 +45,9 @@ async function start() {
     } else {
       console.log(e.message);
     }
+  } finally {
+    process.stdout.write('>> done!!\n\n');
   }
 }
 
-process.stdout.write('>> Starting...\n\n');
-await start();
-process.stdout.write('>> done!!\n\n');
-process.exit(0);
+start();

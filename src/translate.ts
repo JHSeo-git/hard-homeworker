@@ -19,17 +19,17 @@ When translating, you should consider the following questions
 `;
 
 export async function translate(text: string, language = 'Korean') {
-  process.stdout.write('splitting text by token length...\n');
+  process.stdout.write('splitting text by token length...\n\n');
   const texts = splitTextByTokenLength(text, MAX_TOKEN_LEN);
-  process.stdout.write('splitting text by token length Done!\n');
+  process.stdout.write('splitting text by token length Done!\n\n');
 
   const results: string[] = [];
 
   for (let i = 0; i < texts.length; i++) {
     const targetText = texts[i];
 
-    process.stdout.write(`translating...\n\n`);
-    process.stdout.write(`(${i + 1} of ${texts.length}) `);
+    process.stdout.write(`translating...`);
+    process.stdout.write(`(${i + 1} of ${texts.length})\n\n`);
 
     const starttime = Date.now();
 
@@ -44,7 +44,11 @@ export async function translate(text: string, language = 'Korean') {
           role: 'user',
           content: `
 Translate the following text to ${language}
-text: ${targetText}`,
+
+Text: ${targetText}
+
+Do not include the label or prompt in your translation.
+`,
         },
       ],
       temperature: 1,
