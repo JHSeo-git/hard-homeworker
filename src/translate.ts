@@ -31,7 +31,7 @@ export async function translate(text: string, language = 'Korean') {
     const targetText = texts[i];
 
     process.stdout.write(`translating...`);
-    process.stdout.write(`(${i + 1} of ${texts.length})\n\n`);
+    process.stdout.write(`(${i + 1} of ${texts.length}) `);
 
     const starttime = Date.now();
 
