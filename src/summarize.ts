@@ -4,32 +4,20 @@ import path from 'node:path';
 import { openai } from './lib/openai.js';
 import { splitTextByTokenLength } from './lib/tokenizor.js';
 
-const MAX_TOKEN_LEN = 16000; // 16k
+const MAX_TOKEN_LEN = 15000; // 16k but 15k to be safe
 
 const SYSTEM_PROMPT = `
-The total length of the content that I want to send you is too large to send in only one piece.
-For sending you that content, I will follow this rule:
-[START PART 1/5]
-this is the content of the part 1 out of 5 in total
-[END PART 1/5]
-And when I tell you "ALL PARTS SENT", then you can continue processing the data and answering my requests.
+Your job is to summarize well so that the reader gets the same understanding as when they read the original.
+You must provide a summary that is concise and clear.
+Remain neutral and objective.
 
-The processing is summarizing the text into a short summary.
+When you share your summarized text with others, write as if you were a presenter.
+For example, you have to write it as if you were sharing it in conference.
 
-When summarizing, you should consider the following instructions:
-1. Summarize to the same language used in the content.
-2. Be sure to include a topic and important information.
-3. Write it as easy as possible as if you are explaining to a beginning software engineer.
-4. Write it as if you were sharing this summarized text with someone.
+Include all necessary information to convey context.
 
 Do not include the text label or prompt in your summary.
 Just summarize the text and send it back to me.
-
-Remember to write the summary in the same language as the content.
-`;
-
-const END_PROMPT = `
-ALL PARTS SENT
 `;
 
 const filePath = path.join(
@@ -38,41 +26,17 @@ const filePath = path.join(
 );
 const mockText = await fs.readFile(filePath, 'utf-8');
 
-const getPrompt = (text: string, process: string) =>
-  `
-[START PART ${process}]
-${text}
-[END PART ${process}]
-`;
-
-function getProcessingPrompt(text: string, currIndex: number, total: number) {
-  const curr = `${currIndex}/${total}`;
-
-  if (currIndex === total) {
-    return `${getPrompt(text, curr)} ${END_PROMPT}`;
-  }
-
-  return `
-Do not answer yet. This is just another part of the text I want to send you.
-Just receive and wait for the next part.
-${getPrompt(text, curr)}
-Remember not answering yet. Just receive and wait for the next part.
-`;
-}
-
-export async function summarize(text: string = mockText) {
+export async function summarize(text: string = mockText, language = 'Korean') {
   process.stdout.write('splitting text by token length...\n\n');
   const texts = splitTextByTokenLength(text, MAX_TOKEN_LEN);
   process.stdout.write('splitting text by token length Done!\n\n');
 
-  let result = '';
+  const results: string[] = [];
   for (let i = 0; i < texts.length; i++) {
     const targetText = texts[i];
 
     process.stdout.write(`summarizing...`);
     process.stdout.write(`(${i + 1} of ${texts.length}) `);
-
-    console.log(getProcessingPrompt(targetText, i + 1, texts.length));
 
     const starttime = Date.now();
 
@@ -85,7 +49,11 @@ export async function summarize(text: string = mockText) {
         },
         {
           role: 'user',
-          content: getProcessingPrompt(targetText, i + 1, texts.length),
+          content: `
+Summarize the following text in ${language}.
+
+Text: ${targetText}
+          `,
         },
       ],
       temperature: 1,
@@ -99,10 +67,14 @@ export async function summarize(text: string = mockText) {
     process.stdout.write(` for: ${summarizedMinutes.toFixed(2)}minutes`);
     process.stdout.write(`, Estimated time left: ${estimatedTranslateTime.toFixed(2)} minutes \n`);
 
-    result = response.data.choices?.[0].message?.content ?? '';
+    const result = response.data.choices?.[0].message?.content ?? '';
+
+    results.push(result);
   }
+
+  const summarized = results.join(' ');
 
   process.stdout.write(`summarizing Done!\n\n`);
 
-  return result;
+  return summarized;
 }
