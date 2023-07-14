@@ -3,7 +3,7 @@ import { openai } from './lib/openai.js';
 import { splitTextByTokenLength } from './lib/tokenizor.js';
 
 const MAX_TEXT_LEN = 1000;
-const MAX_TOKEN_LEN = 2048;
+const MAX_TOKEN_LEN = 16000; // 16k
 
 const SYSTEM_PROMPT = `
 Your job is to translate well so that the reader gets the same understanding as when they read the original.
