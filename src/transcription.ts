@@ -9,10 +9,10 @@ import { openai } from './lib/openai.js';
 export async function transcription(filePath: string) {
   const audio = fs.createReadStream(filePath);
 
-  process.stdout.write('transcripting...\n\n');
+  process.stdout.write('transcripting...\n');
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const response = await openai.createTranscription(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     audio as any,
     'whisper-1',
     undefined,

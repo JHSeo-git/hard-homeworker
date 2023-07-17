@@ -39,7 +39,7 @@
     "dotenv": "^16.3.1",
     "fs-extra": "^11.1.1",
     "openai": "^3.3.0",
-    "ytdl-core": "^4.11.4"
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",

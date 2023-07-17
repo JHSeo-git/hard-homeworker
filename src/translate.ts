@@ -17,16 +17,13 @@ When translating, you should consider the following questions
 1. Does the translation reflect the overall tone of the conversation (serious, friendly, etc.)?
 2. Does the translation sound natural and smooth, like a human talking to a human?
 
-Do not include the text label or prompt in your translation.
+Do not include the text label(e.g. "Text: ") or prompt in your translation.
 `;
 
 export async function translate(text: string, language = 'Korean') {
-  process.stdout.write('splitting text by token length...\n\n');
   const texts = splitTextByTokenLength(text, MAX_TOKEN_LEN);
-  process.stdout.write('splitting text by token length Done!\n\n');
 
   const results: string[] = [];
-
   for (let i = 0; i < texts.length; i++) {
     const targetText = texts[i];
 
