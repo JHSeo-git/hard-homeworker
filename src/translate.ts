@@ -1,15 +1,11 @@
-import { bing } from './lib/bing.js';
 import { openai } from './lib/openai.js';
 import { splitTextByTokenLength } from './lib/tokenizor.js';
-
-const MAX_TEXT_LEN = 1000;
-const MAX_TOKEN_LEN = 16000; // 16k
 
 const SYSTEM_PROMPT = `
 Your job is to translate well so that the reader gets the same understanding as when they read the original.
 You need to translate so that the content doesn't sound strange when read by a native speaker of the translation language.
-By default, you should translate with formal words, but it's okay to translate with informal words if the overall tone of the conversation is very friendly.
-By default, you should translate with a honorific word, but it's okay to translate with a casually word. if the overall tone of the conversation is very friendly. You should translate with a consistent(a honorific word, a casually word) tone throughout the entire conversation.
+You should translate with formal words, but it's okay to translate with informal words if the overall tone of the conversation is very friendly.
+You should translate with a honorific word, but it's okay to translate with a casually word. if the overall tone of the conversation is very friendly. You should translate with a consistent(a honorific word, a casually word) tone throughout the entire conversation.
 Some conversations may contain sarcasm or humorous codes that don't affect the topic or overall tone.
 Even if the entire conversation doesn't sound natural, you still need to understand the overall context.
 
@@ -17,11 +13,11 @@ When translating, you should consider the following questions
 1. Does the translation reflect the overall tone of the conversation (serious, friendly, etc.)?
 2. Does the translation sound natural and smooth, like a human talking to a human?
 
-Do not include the text label(e.g. "Text: ") or prompt in your translation.
+Do not include the text labels or prompts in your translation.
 `;
 
-export async function translate(text: string, language = 'Korean') {
-  const texts = splitTextByTokenLength(text, MAX_TOKEN_LEN);
+export async function translate(text: string, maxTokenLength: number, language = 'Korean') {
+  const texts = splitTextByTokenLength(text, maxTokenLength);
 
   const results: string[] = [];
   for (let i = 0; i < texts.length; i++) {
@@ -48,7 +44,7 @@ Text: ${targetText}
 `,
         },
       ],
-      temperature: 1,
+      temperature: 0,
     });
 
     const percent = (i + 1) / texts.length;
@@ -71,19 +67,19 @@ Text: ${targetText}
   return translated;
 }
 
-export async function translateBing(text: string) {
-  const results = [];
+// export async function translateBing(text: string) {
+//   const results = [];
 
-  for (let i = 0; i < text.length; i += MAX_TEXT_LEN) {
-    const substringForText = text.substring(i, i + MAX_TEXT_LEN);
-    const substringTranslated = await bing.translate({
-      text: substringForText,
-      to: 'ko',
-    });
-    results.push(substringTranslated);
-  }
+//   for (let i = 0; i < text.length; i += MAX_TEXT_LEN) {
+//     const substringForText = text.substring(i, i + MAX_TEXT_LEN);
+//     const substringTranslated = await bing.translate({
+//       text: substringForText,
+//       to: 'ko',
+//     });
+//     results.push(substringTranslated);
+//   }
 
-  const translated = results.join();
+//   const translated = results.join();
 
-  return translated;
-}
+//   return translated;
+// }

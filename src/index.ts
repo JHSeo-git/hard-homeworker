@@ -35,7 +35,7 @@ async function start() {
     const results: string[] = [];
     for (const output of outputs) {
       const transcript = await transcription(output);
-      results.push(await translate(transcript));
+      results.push(await translate(transcript, MAX_TOKEN_LENGTH));
     }
 
     // translate
@@ -52,7 +52,7 @@ async function start() {
     // tldr
     const tldrSummarized = await tldr(summarized, MAX_TOKEN_LENGTH);
     const summarizedFileName = `${getFileNameFromPath(downloadedPath)}-summarize`;
-    const summarizedWithTldr = `${tldrSummarized}\n\n${summarized}`;
+    const summarizedWithTldr = `## TLDR\n\n${tldrSummarized}\n\n## Summary\n\n${summarized}`;
     await writeFile(`${saveDir}/${summarizedFileName}.md`, summarizedWithTldr);
   } catch (e: any) {
     if (e.response) {
