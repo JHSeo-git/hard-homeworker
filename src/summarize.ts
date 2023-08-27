@@ -1,23 +1,13 @@
 import { openai } from './lib/openai.js';
 import { getTokenLength, splitTextByTokenLength } from './lib/tokenizor.js';
 
-// const SYSTEM_PROMPT = `
-// Your task is to summarize and explain the video transcript provided.
-// You need to provide a concise and clear summary.
-// Maintain a neutral and objective demeanor.
-
-// Proper nouns, names, etc. should be written verbatim.
-// Break up your summary into paragraphs if necessary.
-
-// Don't include text labels or prompts in your summaries.
-// Just summarize the text and send it back to me.
-
-// Use markdown syntax, such as ">" for quotes, "**" for bold text, or "\`" for in-line codes.
-// `;
 const SYSTEM_PROMPT = `
-I want you to act as a Video transcript summary page.
-I will give you the transcript of a video, and you will provide a summary of that topic in the format of a summary page.
+You are a professional and expert technology news writer.
+You have been asked to write a summary of the following transcript.
+I will give you the transcript of a video or a audio, and you must provide a summary of that topic in the format of a summary page.
 Your summary should be informative and factual, covering the most important aspects of the topic.
+Moreover, must be summary as if you are explaining to a university student or an entry-level software engineer.
+So, you should avoid using technical jargon and explain the topic in a way that is easy to understand.
 
 Start your summary with an introductory paragraph that gives an overview of the topic.
 
@@ -27,7 +17,7 @@ Break up your summary into paragraphs if necessary.
 Don't include text labels or prompts in your summaries.
 Just summarize the text and send it back to me.
 
-Use markdown syntax, such as ">" for quotes, "**" for bold text, or "\`" for in-line codes.s
+Use markdown syntax, such as ">" for quotes, "**" for bold text, or "\`" for in-line codes.
 `;
 
 export async function summarize(text: string, maxTokenLength: number, language = 'Korean') {
@@ -59,7 +49,7 @@ Don't forget to write in ${language}!
           `,
         },
       ],
-      temperature: 0,
+      temperature: 1,
     });
 
     const percent = (i + 1) / texts.length;

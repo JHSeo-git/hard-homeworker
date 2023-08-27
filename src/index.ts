@@ -31,29 +31,28 @@ async function start() {
       MAX_AUDIO_SIZE_MB
     );
 
-    // trascription
-    const results: string[] = [];
-    for (const output of outputs) {
-      const transcript = await transcription(output);
-      results.push(await translate(transcript, MAX_TOKEN_LENGTH));
-    }
+    const fileName = getFileNameFromPath(downloadedPath);
 
-    // translate
-    const translatedFileName = getFileNameFromPath(downloadedPath);
+    // trascription + translate
+    const results = await Promise.all(
+      outputs.map(async (output) => {
+        const transcript = await transcription(output);
+        return await translate(transcript, MAX_TOKEN_LENGTH);
+      })
+    );
+    const translatedFileName = `${fileName}.md`;
     const translated = results.join(' ');
-    await writeFile(`${saveDir}/${translatedFileName}.md`, translated);
+    await writeFile(`${saveDir}/${translatedFileName}`, translated);
 
-    // summarize
+    // summarize + tldr
     let summarized = await summarize(translated, MAX_TOKEN_LENGTH);
     while (getTokenLength(summarized) > MAX_TOKEN_LENGTH) {
       summarized = await summarize(summarized, MAX_TOKEN_LENGTH);
     }
-
-    // tldr
     const tldrSummarized = await tldr(summarized, MAX_TOKEN_LENGTH);
-    const summarizedFileName = `${getFileNameFromPath(downloadedPath)}-summarize`;
+    const summarizedFileName = `${fileName}-summarize.md`;
     const summarizedWithTldr = `## TLDR\n\n${tldrSummarized}\n\n## Summary\n\n${summarized}`;
-    await writeFile(`${saveDir}/${summarizedFileName}.md`, summarizedWithTldr);
+    await writeFile(`${saveDir}/${summarizedFileName}`, summarizedWithTldr);
   } catch (e: any) {
     if (e.response) {
       console.log(e.response.status);
@@ -62,7 +61,7 @@ async function start() {
       console.log(e.message);
     }
   } finally {
-    process.stdout.write('>> done!!\n\n');
+    process.stdout.write('>> Homework !!DONE!!\n\n');
   }
 }
 

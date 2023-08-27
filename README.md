@@ -19,7 +19,7 @@ Personally
 
 - [x] Full speech transcribed to text
 - [x] Transcript translated into Korean
-- [ ] Speech summary
+- [x] Speech summary
 
 ## stack
 
@@ -36,11 +36,15 @@ nodejs + typescript
   - [openai api whisper](https://platform.openai.com/docs/guides/speech-to-text)
 - translator
   - [openai api chatcompletion](https://platform.openai.com/docs/guides/gpt/chat-completions-api)
-  - _later: DeepL API_
+  - [deepl api](https://www.deepl.com/docs-api)
 
 ## process
 
-- [ ] github action + cron
+- [x] script run
+
+![process](./__docs/process.png)
+
+- [ ] github action
 
 0. Enter the destination YouTube address (method to be determined)
 1. download the YouTube video

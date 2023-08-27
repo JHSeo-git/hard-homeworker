@@ -1,3 +1,4 @@
+import { convertToTargetLanguage, deeplTranslator } from './lib/deepl.js';
 import { openai } from './lib/openai.js';
 import { splitTextByTokenLength } from './lib/tokenizor.js';
 
@@ -28,24 +29,8 @@ export async function translate(text: string, maxTokenLength: number, language =
 
     const starttime = Date.now();
 
-    const response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo-16k',
-      messages: [
-        {
-          role: 'system',
-          content: SYSTEM_PROMPT,
-        },
-        {
-          role: 'user',
-          content: `
-Translate the following text to ${language}
-
-Text: ${targetText}
-`,
-        },
-      ],
-      temperature: 0,
-    });
+    // const result = await translateOnOpenAI(targetText, language);
+    const result = await translateOnDeepL(targetText, language);
 
     const percent = (i + 1) / texts.length;
     const translatedMinutes = (Date.now() - starttime) / 1000 / 60;
@@ -55,31 +40,42 @@ Text: ${targetText}
     process.stdout.write(` for: ${translatedMinutes.toFixed(2)}minutes`);
     process.stdout.write(`, Estimated time left: ${estimatedTranslateTime.toFixed(2)} minutes \n`);
 
-    const result = response.data.choices?.[0].message?.content ?? '';
-
     results.push(result);
   }
 
-  const translated = results.join(' ');
+  const translated = results.filter(Boolean).join(' ');
 
   process.stdout.write(`translating Done!\n\n`);
 
   return translated;
 }
 
-// export async function translateBing(text: string) {
-//   const results = [];
+async function translateOnOpenAI(text: string, language: string) {
+  const response = await openai.createChatCompletion({
+    model: 'gpt-3.5-turbo-16k',
+    messages: [
+      {
+        role: 'system',
+        content: SYSTEM_PROMPT,
+      },
+      {
+        role: 'user',
+        content: `
+Translate the following text to ${language}
 
-//   for (let i = 0; i < text.length; i += MAX_TEXT_LEN) {
-//     const substringForText = text.substring(i, i + MAX_TEXT_LEN);
-//     const substringTranslated = await bing.translate({
-//       text: substringForText,
-//       to: 'ko',
-//     });
-//     results.push(substringTranslated);
-//   }
+Text: ${text}
+`,
+      },
+    ],
+    temperature: 0,
+  });
 
-//   const translated = results.join();
+  return response.data.choices?.[0].message?.content ?? '';
+}
 
-//   return translated;
-// }
+async function translateOnDeepL(text: string, language: string) {
+  const targetLanguage = convertToTargetLanguage(language);
+  const response = await deeplTranslator.translateText(text, 'en', targetLanguage);
+
+  return response.text ?? '';
+}
